@@ -1,0 +1,63 @@
+version: "2"
+volumes:
+  mysql_data:
+  nodered_data:
+  syncthing_data:
+services:
+  mysql:
+    image: mysql:5.7.21
+    restart: always
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./config_mysql:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/usr/share/nginx/html
+  bookstack:
+    image: solidnerd/bookstack
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=bookstack
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+    ports:
+      - 81:80
+    depends_on:
+      - mysql
+  nodered:
+    image: nodered/node-red:latest
+    restart: always
+    ports:
+      - 82:1880
+    environment:
+      - NODERED_ADMIN_PASSWORD_HASH=${NODERED_ADMIN_PASSWORD_HASH}
+      - NODERED_GUEST_PASSWORD_HASH=${NODERED_GUEST_PASSWORD_HASH}
+    volumes:
+      - nodered_data:/data
+      - ./config_nodered/settings.js:/data/settings.js
+  syncthing:
+    image: syncthing/syncthing:latest
+    restart: always
+    ports:
+      - 83:8384
+      - 22000:22000
+    volumes:
+      - syncthing_data:/var/syncthing
+  # huginn:
+  #   image: huginn/huginn
+  #   ports:
+  #     - 82:3000
+  #   environment:
+  #     - HUGINN_DATABASE_NAME=huginn
+  #     - HUGINN_DATABASE_USERNAME=root
+  #     - HUGINN_DATABASE_PASSWORD=
+  #   links:
+  #     - mysql:huginn_mysql
