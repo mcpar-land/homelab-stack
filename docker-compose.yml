@@ -51,13 +51,13 @@ services:
       - 22000:22000
     volumes:
       - syncthing_data:/var/syncthing
-  # huginn:
-  #   image: huginn/huginn
-  #   ports:
-  #     - 82:3000
-  #   environment:
-  #     - HUGINN_DATABASE_NAME=huginn
-  #     - HUGINN_DATABASE_USERNAME=root
-  #     - HUGINN_DATABASE_PASSWORD=
-  #   links:
-  #     - mysql:huginn_mysql
+  huginn:
+    image: huginn/huginn
+    ports:
+      - 84:3000
+    environment:
+      - HUGINN_DATABASE_NAME=huginn
+      - HUGINN_DATABASE_USERNAME=root
+      - HUGINN_DATABASE_PASSWORD=
+    links:
+      - mysql:huginn_mysql
