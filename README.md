@@ -1,6 +1,6 @@
 My homelab docker stack.
 
-# Env Files
+# Env Variables
 
 | Variable                      | Description                     |
 | ----------------------------- | ------------------------------- |
